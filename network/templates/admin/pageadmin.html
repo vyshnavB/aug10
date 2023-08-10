@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+{% load temptage %}
+
+    <title>Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #f2f2f2;
+            height: 100vh;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar li {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .sidebar li.active {
+            background-color: #ddd;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        table td img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .username {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+.card {
+  display: inline-block;
+  text-align: center;
+  margin-top: 400px;
+}
+
+.round-image {
+  border-radius: 50%;
+}
+.edit-button {
+  margin-top: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background-color: #0056b3;
+}
+    </style>
+    <script>
+        function openTab(tabName) {
+            // Hide all tab content
+            var tabContents = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].style.display = "none";
+            }
+
+            // Remove active class from all tabs
+            var tabs = document.getElementsByClassName("tab");
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove("active");
+            }
+
+            // Show the selected tab content
+            document.getElementById(tabName).style.display = "block";
+
+            // Add active class to the clicked tab
+            event.currentTarget.classList.add("active");
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <ul>
+                <li class="tab" onclick="openTab('dashboard')">Dashboard</li>
+                <li class="tab" onclick="openTab('users')">Users</li>
+                <li class="tab" onclick="openTab('topics')">Topics</li>
+                <li class="tab" onclick="openTab('organization')">Organization</li>
+                <li class="tab" onclick="openTab('posts')">Posts</li>
+                <li class="tab" onclick="openTab('translation')">Translation</li>
+                <li class="tab" ><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+            <div class="card">
+                <img src="profile-image.jpg" alt="Profile Image" class="round-image">
+                <h3 class="username">{{ user.username }}</h3>
+                <button class="edit-button"><a href="{% url 'edit_profile' user.id %}" style="color: white;text-decoration: none;">Edit</a></button>
+              </div>
+        </div>
+        <div class="main-content">
+            <div id="dashboard" class="tab-content">
+                <!-- Dashboard content here -->
+                <h2>Dashboard</h2>
+                <p>Dashboard content goes here.</p>
+            </div>
+            <div id="users" class="tab-content">
+              <h2>Users</h2>
+              <table>
+                  <thead>
+                      <tr>
+                          <th>Sl No</th>
+                          <th>Name</th>
+                          <th>Type</th>
+                          <th>Followers</th>
+                          <th>Following</th>
+                          <th>No. of Giz</th>
+                          <th>Action</th>
+                      </tr>
+                  </thead>
+                  
+                  <tbody>
+                    {% for user in users %}
+    {% if user.user_type != 'organization' %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>
+            <img src="{{ user.profile_pic.url }}" alt="Profile Image" style="width: 30px; height: 30px; border-radius: 50%;">
+            {{ user.username }}
+        </td>
+        <td>{{ user.category }}</td>
+        <td>{{ user.id | user_followers }}</td>
+        <td>{{ user.id | user_following }}</td>
+        <td>{{ creater.post.count }}</td>
+        <td><a href="{% url 'profile' user.id %}">View</a></td>
+        <td><a href="#">Delete</a></td>
+        <td><a href="{% url 'edit_profile' user.id %}">Edit</a></td>
+    </tr>
+    {% endif %}
+{% endfor %}
+                      <!-- Add more user rows as needed -->
+                  </tbody>
+              </table>
+          </div>
+          
+          <div id="topics" class="tab-content">
+            <h2>Topics</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Intrest Name</th>
+                        <th>Path</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for intrest_obj, path in topics %}
+                    <tr>
+                        <td>{{ intrest_obj.intrest_name }}</td>
+                        <td>{{ path }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            
+            
+            
+            
+        </div>
+        
+        <div id="organization" class="tab-content">
+            <h2>Organization</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sl No</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Followers</th>
+                        <th>Following</th>
+                        <th>No. of Giz</th>
+                        <th>Action</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        {% if user.user_type != 'individual' %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <img src="{{ user.profile_pic.url }}" alt="Profile Image" style="width: 30px; height: 30px; border-radius: 50%;">
+                                {{ user.username }}
+                            </td>
+                            <td>{{ user.category }}</td>
+                            <td>{{ user.id | user_followers }}</td>
+                            <td>{{ user.id | user_following }}</td>
+                            <td>{{ creater.post.count }}</td>
+                            <td><a href="{% url 'profile' user.id %}">View</a></td>
+                            <td><a href="#">Delete</a></td>
+                            <td><a href="{% url 'edit_profile' user.id %}">Edit</a></td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="posts" class="tab-content">
+            <div class="tab-buttons">
+                <button class="tab active" onclick="switchTab('posts-tab')">Posts</button>
+                <button class="tab" onclick="switchTab('giz-posts-tab')">Giz Posts</button>
+            </div>
+        
+            <div id="posts-tab" class="tab-content-item active">
+                <h2>Posts</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Post Image</th>
+                        <th>Title</th>
+                        <th>Username</th>
+                        <th>Hats-off</th>
+                        <th>Bookmarks</th>
+                        <th>Viewers</th>
+                        <th>Action</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in posts %}
+                    {% if post.status == 'nsale' %}
+                    <tr>
+                        <td>
+                            {% if post.content_image %}
+                              <img src="{{ post.content_image.url }}" alt="Post Image" style="width: 50px; height: 50px;">
+                            {% else %}
+                              No image available
+                            {% endif %}
+                          </td>
+                        <td>{{ post.title }}</td>
+                        <td>
+                            <img src="{{ post.creater.profile_pic.url }}" alt="Profile Image" style="width: 30px; height: 30px; border-radius: 50%;">
+                            {{ post.creater.username }}
+                        </td>
+                        <td>{{ post.likers.count }}</td>
+                        <td>{{ post.savers.count }}</td>
+                        <td>{{ post.id | views_count }}</td>
+                        <td><a href="#">View</a></td>
+                        <td><a href="#">Delete</a></td>
+                        <td><a href="">Edit</a></td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div id="giz-posts-tab" class="tab-content-item">
+            <h2>Giz</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Post Image</th>
+                        <th>Title</th>
+                        <th>Username</th>
+                      
+                        <th>Viewers</th>
+                        <th>Price
+
+                        </th>
+                        <th>Action</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in posts %}
+                    {% if post.status == 'sale' %}
+                    <tr>
+                        <td>
+                            {% if post.content_image %}
+                              <img src="{{ post.content_image.url }}" alt="Post Image" style="width: 50px; height: 50px;">
+                            {% else %}
+                              No image available
+                            {% endif %}
+                          </td>
+                        <td>{{ post.title }}</td>
+                        <td>
+                            <img src="{{ post.creater.profile_pic.url }}" alt="Profile Image" style="width: 30px; height: 30px; border-radius: 50%;">
+                            {{ post.creater.username }}
+                        </td>
+                        <td>{{ post.likers.count }}</td>
+                        <td>{{ post.savers.count }}</td>
+                        <td><a href="#"></a>{{ post.Product_Price }}</td>
+                        <td>{{ post.id | views_count }}</td>
+                        <td><a href="#">View</a></td>
+                        <td><a href="#">Delete</a></td>
+                        <td><a href="">Edit</a></td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table><!-- Content for the "Giz Posts" tab goes here -->
+        </div>
+    </div>
+        
+
+    <div id="translation" class="tab-content">
+        <form method="post" enctype="multipart/form-data" action="{% url 'pageadmin' %}">
+
+            {% csrf_token %}
+            <input type="file" name="excel_file">
+            <button type="submit">Upload</button>
+          </form>
+
+
+          <select onchange="updateLanguageValues(this.value)">
+            <option value="">Choose a language</option>
+            <option value="English">English</option>
+            <option value="Malayalam">Malayalam</option>
+            <option value="Tamil">Tamil</option>
+          </select>
+          
+          <p id="labelHome"></p>
+          <p id="labelProfile"></p>
+          <p id="labelBookmark"></p>
+          <p id="labelNotifications"></p>
+          <p id="labelPages"></p>
+          <p id="labelLogout"></p>
+          
+        
+          {% if excel_data %}
+    <a href="{% url 'download_excel' excel_data.id %}" download>Download Excel</a>
+{% endif %}
+
+        
+          
+         
+        
+          <script>
+            var jsonData = JSON.parse('{{ request.session.json_data|escapejs|safe }}');
+          
+            function getValueByColumnName(language, index) {
+              return jsonData[index][language];
+            }
+          
+            function updateLanguageValues(language) {
+              var labels = ['Home', 'Profile', 'Bookmark', 'Notifications', 'Pages', 'Logout'];
+          
+              labels.forEach(function (label, index) {
+                var elementId = 'label' + label;
+                var value = getValueByColumnName(language, index);
+          
+                document.getElementById(elementId).textContent = value;
+              });
+            }
+          </script>
+          <script>
+            var jsonData = JSON.parse('{{ request.session.json_data|escapejs }}');
+        
+        function getValueByColumnName(columnName, rowIndex) {
+          var row = jsonData[rowIndex];
+          if (row) {
+            return row[columnName];
+          }
+          return '';
+        }
+          </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var tabContents = document.getElementsByClassName("tab-content-item");
+        for (var i = 1; i < tabContents.length; i++) {
+            tabContents[i].style.display = "none";
+        }
+    });
+
+    function switchTab(tabName) {
+        var tabContents = document.getElementsByClassName("tab-content-item");
+        for (var i = 0; i < tabContents.length; i++) {
+            tabContents[i].style.display = "none";
+        }
+
+        var tabs = document.getElementsByClassName("tab");
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].classList.remove("active");
+        }
+
+        document.getElementById(tabName).style.display = "block";
+        event.currentTarget.classList.add("active");
+    }
+</script>
+    </div>
+    
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Item Categories</title>
+</head>
+<body>
+    <h1>Create New Item Categories</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="item_categories">Item Categories:</label>
+        <input type="text" name="item_categories" id="item_categories" required>
+        <button type="submit">Create</button>
+    </form>
+</body>
+</html>

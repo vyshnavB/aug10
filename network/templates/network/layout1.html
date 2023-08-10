@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Fruit Seasons</title>
+</head>
+
+<body>
+  <h1>Fruit Seasons</h1>
+  <label for="fruits">Select a fruit:</label>
+  <select id="fruits" onchange="populateSeasons()">
+    <option value="apple">Apple</option>
+    <option value="mango">Mango</option>
+    <option value="orange">Orange</option>
+    <!-- Add more fruits and their respective seasons here -->
+  </select>
+
+  <br>
+
+  <label for="seasons">Available seasons:</label>
+  <select id="seasons">
+    <!-- The second dropdown will be populated dynamically using JavaScript -->
+  </select>
+
+  <script>
+    function populateSeasons() {
+      var selectedFruit = document.getElementById("fruits").value;
+      var seasonsDropdown = document.getElementById("seasons");
+
+      // Clear the previous options
+      seasonsDropdown.innerHTML = "";
+
+      // Add options based on the selected fruit
+      if (selectedFruit === "apple") {
+        addOption(seasonsDropdown, "August");
+        addOption(seasonsDropdown, "September");
+        addOption(seasonsDropdown, "October");
+      } else if (selectedFruit === "mango") {
+        addOption(seasonsDropdown, "April");
+        addOption(seasonsDropdown, "May");
+      } else if (selectedFruit === "orange") {
+        addOption(seasonsDropdown, "January");
+        addOption(seasonsDropdown, "February");
+        addOption(seasonsDropdown, "March");
+      }
+      // Add more conditions for other fruits and their respective seasons
+    }
+
+    function addOption(selectElement, optionText) {
+      var option = document.createElement("option");
+      option.text = optionText;
+      selectElement.add(option);
+    }
+
+    // Initial population of seasons based on the default selected fruit
+    populateSeasons();
+  </script>
+</body>
+
+</html>

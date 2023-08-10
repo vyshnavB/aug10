@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+</head>
+<body>
+    <h1>Search Results</h1>
+    <div class="container">
+        <ul class="cbox-tags">
+          {% for interest in intr %}
+            <li>
+              <input type="checkbox" class="chkbx" id="checkbox{{ forloop.counter }}">
+              <label for="checkbox{{ forloop.counter }}">
+                {% if interest.intrest_name %}
+                  {% if interest.id in intr_followers %}
+                    <a href="{% url 'intrest_unfollow' interest.id %}" class="btn btn-primary" style="background-color: rgb(121, 194, 236); border-radius: 15px; border-color: black; text-decoration: none; color: black;">{{ interest.intrest_name }}</a>
+                  {% else %}
+                    <a href="{% url 'intrest_follow' interest.id %}" class="btn-primary" style="background-color: rgb(255, 255, 255); text-decoration: none; color: black;">{{ interest.intrest_name }}</a>
+                  {% endif %}
+                {% endif %}
+              </label>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+</body>
+</html>
